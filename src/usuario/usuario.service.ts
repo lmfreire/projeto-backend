@@ -60,5 +60,23 @@ export class UsuarioService {
         }
     }
 
+    async findEmpresaByUserEmail(email: string) {
+        const usuario = await this.prismaService.usuario.findUnique({
+            where: {
+                email
+            }
+        })
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        return await this.prismaService.empresa.findMany({
+            where: {
+                id: Number(usuario.empresaId)
+            }
+        });
+    }
+
 
 }

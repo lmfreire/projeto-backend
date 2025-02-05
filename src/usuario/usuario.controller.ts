@@ -27,4 +27,15 @@ export class UsuarioController {
             throw new BadRequestException(error.message);
         }
     }
+
+    @Get('/empresa/:email')
+    async findEmpresaByUserEmail(@Param('email') email: string) {
+        
+        try {
+            return await this.usuarioService.findEmpresaByUserEmail(email);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+        
+    }
 }
