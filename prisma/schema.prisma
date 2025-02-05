@@ -17,6 +17,7 @@ model Empresa {
   id Int @id @default(autoincrement())
   nome String
   cnpj String
+  ativo Boolean @default(true)
 
   Usuario Usuario[]
 }
