@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { EmpresaService } from './empresa.service';
+import { AuthGuard } from '../usuario/auth.guard';
 
 @Controller('empresa')
 export class EmpresaController {
@@ -16,6 +17,13 @@ export class EmpresaController {
     @Get()
     async findAll() {
         return await this.empresaService.findAll();
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('/usuario')
+    async findEmpresaByUser(@Req() req: Request) {
+        const user = req['user'];
+        return await this.empresaService.findEmpresaByUser(user);
     }
 
 }

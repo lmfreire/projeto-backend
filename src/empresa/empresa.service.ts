@@ -18,4 +18,12 @@ export class EmpresaService {
         return await this.prismaService.empresa.findMany();
     }
 
+    async findEmpresaByUser(user: any) {
+        return await this.prismaService.empresa.findMany({
+            where: {
+                id: Number(user.empresaId)
+            }
+        });
+    }
+
 }

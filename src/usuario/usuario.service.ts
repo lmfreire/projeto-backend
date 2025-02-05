@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { CreateUsuarioDto, LoginUsuarioDto } from './usuario-dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsuarioService {
 
     constructor(
-        private readonly prismaService: PrismaService
+        private readonly prismaService: PrismaService,
+        private readonly jwtService: JwtService
     ){}
 
     async createUsuario(data: CreateUsuarioDto){
@@ -51,7 +53,11 @@ export class UsuarioService {
             throw new Error('Credenciais inválidas');
         }
 
-        return result;
+        const {senha, ...result_limpo} = result
+
+        return {
+            access_token: this.jwtService.sign(result)
+        }
     }
 
 
