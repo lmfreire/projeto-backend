@@ -20,6 +20,10 @@ model Empresa {
   ativo Boolean @default(true)
 
   Usuario Usuario[]
+
+  Produto Produto[]
+
+  Fabricante Fabricante[]
 }
 
 model Usuario {
@@ -29,4 +33,40 @@ model Usuario {
   email String @unique
   empresa Empresa @relation(fields: [empresaId], references: [id])
   empresaId Int
+}
+
+model Fabricante {
+  id Int @id @default(autoincrement())
+  nome String
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresaId Int
+
+  Produto Produto[]
+}
+
+model Produto {
+  id Int @id @default(autoincrement())
+  nome String  
+  estoque Int
+  precoVenda Decimal
+
+  fabricante Fabricante @relation(fields: [fabricanteId], references: [id])
+  fabricanteId Int
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresaId Int
+
+  ProdutoItem ProdutoItem[]
+}
+
+model ProdutoItem {
+  id Int @id @default(autoincrement())
+  codigo String
+  descricao String?
+  complemento String?
+  markup String?
+  codigogtin String?
+  
+  produto Produto @relation(fields: [produtoId], references: [id])
+  produtoId Int
 }
