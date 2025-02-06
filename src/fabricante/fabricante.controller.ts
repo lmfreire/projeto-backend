@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { FabricanteService } from './fabricante.service';
 import { CriarFabricanteDto } from './fabricante-dto';
+import { AuthGuard } from '../usuario/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('fabricante')
 export class FabricanteController {
 
