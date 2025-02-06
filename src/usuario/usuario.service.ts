@@ -56,7 +56,7 @@ export class UsuarioService {
         const {senha, ...result_limpo} = result
 
         return {
-            access_token: this.jwtService.sign(result)
+            access_token: this.jwtService.sign(result_limpo)
         }
     }
 
