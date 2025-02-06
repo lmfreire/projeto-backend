@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { findAllByFabricanteDto, findById, ProdutoDto } from './produto-dto';
+import { adicionarEstoqueDto, findAllByFabricanteDto, findById, ProdutoDto } from './produto-dto';
 
 @Injectable()
 export class ProdutoService {
@@ -11,7 +11,10 @@ export class ProdutoService {
 
     async create(data: ProdutoDto){
         return this.prismaService.produto.create({
-            data: data,
+            data: {
+                estoque: 0,
+                ...data
+            },
         });
     }
     
@@ -38,6 +41,30 @@ export class ProdutoService {
                 fabricanteId: Number(data.fabricanteId),
                 empresaId: Number(data.empresaId),
                 id: Number(data.id)
+            }
+        });
+    }
+
+    async adicionarEstoque(data: adicionarEstoqueDto){
+
+        const estoque = await this.prismaService.produto.findUnique({
+            where: {
+                id: Number(data.produtoId),
+                empresaId: Number(data.empresaId)
+            }
+        })
+
+        if (!estoque) {
+            throw new Error('Produto não encontrado');
+        }
+
+        return this.prismaService.produto.update({
+            where: {
+                id: Number(data.produtoId),
+                empresaId: Number(data.empresaId)
+            },
+            data: {
+                estoque: estoque.estoque + 1
             }
         });
     }

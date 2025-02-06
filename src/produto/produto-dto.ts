@@ -1,13 +1,13 @@
 export class ProdutoDto {
     nome: string;
-    estoque: number;
+    estoque?: number;
     precoVenda: number;
     empresaId: number;
     fabricanteId: number;
 }
 
 export class findAllDto {
-    empresaId: number
+    empresaId: number;
 }
 
 export class findAllByFabricanteDto extends findAllDto{
@@ -15,5 +15,11 @@ export class findAllByFabricanteDto extends findAllDto{
 }
 
 export class findById extends findAllByFabricanteDto{
-    id: number
+    id: number;
+}
+
+export class adicionarEstoqueDto {
+    produtoId: number;
+    empresaId: number;
+
 }

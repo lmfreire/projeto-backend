@@ -24,6 +24,8 @@ model Empresa {
   Produto Produto[]
 
   Fabricante Fabricante[]
+
+  ProdutoItem ProdutoItem[]
 }
 
 model Usuario {
@@ -69,4 +71,7 @@ model ProdutoItem {
   
   produto Produto @relation(fields: [produtoId], references: [id])
   produtoId Int
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresaId Int
 }
