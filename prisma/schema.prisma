@@ -103,7 +103,7 @@ model Venda {
   id Int @id @default(autoincrement())
   valor_total Decimal
   descricao String?
-  data_venda DateTime
+  data_venda DateTime @default(now())
 
   empresa Empresa @relation(fields: [empresaId], references: [id])
   empresaId Int
@@ -122,6 +122,7 @@ model VendaItem {
   quantidade Int
   valor_unitario Decimal
   valor_total Decimal
+  desconto Decimal
 
   produtoItem ProdutoItem @relation(fields: [produtoItemId], references: [id])
   produtoItemId Int @unique

@@ -21,5 +21,10 @@ export class findById extends findAllByFabricanteDto{
 export class adicionarEstoqueDto {
     produtoId: number;
     empresaId: number;
+}
 
+export class removerEstoqueDto {
+    produtoId: number;
+    empresaId: number;
+    quantidade: number;
 }
