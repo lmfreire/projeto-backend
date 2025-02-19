@@ -26,6 +26,10 @@ model Empresa {
   Fabricante Fabricante[]
 
   ProdutoItem ProdutoItem[]
+
+  Venda Venda[]
+
+  Cliente Cliente[]
 }
 
 model Usuario {
@@ -35,6 +39,23 @@ model Usuario {
   email String @unique
   empresa Empresa @relation(fields: [empresaId], references: [id])
   empresaId Int
+
+  Venda Venda[]
+}
+
+model Cliente {
+  id Int @id @default(autoincrement())
+  nome String
+  cpf String
+  email String @unique
+  endereco String
+  telefone String
+  
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresaId Int
+
+
+  Venda Venda[]
 }
 
 model Fabricante {
@@ -74,4 +95,37 @@ model ProdutoItem {
 
   empresa Empresa @relation(fields: [empresaId], references: [id])
   empresaId Int
+
+  vendaItem VendaItem?
+}
+
+model Venda {
+  id Int @id @default(autoincrement())
+  valor_total Decimal
+  descricao String?
+  data_venda DateTime
+
+  empresa Empresa @relation(fields: [empresaId], references: [id])
+  empresaId Int
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  clienteId Int
+
+  VendaItem VendaItem[]
+}
+
+model VendaItem {
+  id Int @id @default(autoincrement())
+  quantidade Int
+  valor_unitario Decimal
+  valor_total Decimal
+
+  produtoItem ProdutoItem @relation(fields: [produtoItemId], references: [id])
+  produtoItemId Int @unique
+
+  venda Venda @relation(fields: [vendaId], references: [id])
+  vendaId Int
 }
