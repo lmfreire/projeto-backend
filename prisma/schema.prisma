@@ -46,10 +46,10 @@ model Usuario {
 model Cliente {
   id Int @id @default(autoincrement())
   nome String
-  cpf String
+  cpf String?
   email String @unique
-  endereco String
-  telefone String
+  endereco String?
+  telefone String?
   
   empresa Empresa @relation(fields: [empresaId], references: [id])
   empresaId Int
