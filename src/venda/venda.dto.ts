@@ -18,3 +18,8 @@ export class VendaItemDto {
     vendaId: number;    
     itens: VendaItemArrDto[];
 }
+
+export class VendaItemRemoveDto {
+    empresaId: number;
+    vendaItemId: number;
+}

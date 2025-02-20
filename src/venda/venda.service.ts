@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProdutoItemService } from 'src/produto-item/produto-item.service';
 import { ProdutoService } from 'src/produto/produto.service';
-import { VendaDto, VendaItemDto } from './venda.dto';
+import { VendaDto, VendaItemDto, VendaItemRemoveDto } from './venda.dto';
 
 @Injectable()
 export class VendaService {
@@ -67,7 +67,35 @@ export class VendaService {
 
         await this.atualizarTotal(data.vendaId, total);
 
-    }    
+    } 
+    
+    async removerItem(data: VendaItemRemoveDto){
+        const item = await this.prismaService.vendaItem.findUnique({
+            where: {
+                id: data.vendaItemId,                
+            }
+        });
+
+        if (!item) {
+            throw new BadRequestException("Item não encontrado");
+        }
+
+        const res = await this.produtoService.adicionarEstoque({
+            empresaId: data.empresaId,
+            produtoId: item.produtoItemId
+        });
+
+        if (!res) {
+            throw new BadRequestException("Erro ao adicionar estoque");
+        }
+
+        return await this.prismaService.vendaItem.delete({
+            where: {
+                id: data.vendaItemId
+            }
+
+        });
+    }
     
     async atualizarTotal(vendaId: number, total: number){
         return await this.prismaService.venda.update({
