@@ -41,6 +41,9 @@ export class ProdutoService {
                 fabricanteId: Number(data.fabricanteId),
                 empresaId: Number(data.empresaId),
                 id: Number(data.id)
+            },
+            include: {
+                ProdutoItem: true
             }
         });
     }
