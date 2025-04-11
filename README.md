@@ -1,6 +1,8 @@
-# Projeto Backend - NestJS
+# **Projeto Backend - NestJS**
 
-Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele implementa funcionalidades de gestão de usuários, empresas, produtos e vendas.
+Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele implementa funcionalidades de gestão de usuários, empresas, produtos, vendas, clientes, fabricantes e itens de produtos.
+
+---
 
 ## **Instalação**
 
@@ -59,14 +61,15 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
 ### **Usuários**
 
 #### **Criar Usuário**
-- **POST** `/usuarios`
+- **POST** `/usuario`
 - **Descrição**: Cria um novo usuário.
 - **Body**:
   ```json
   {
     "nome": "João Silva",
     "email": "joao@email.com",
-    "senha": "senha123"
+    "senha": "senha123",
+    "empresaId": 1
   }
   ```
 - **Resposta**:
@@ -78,16 +81,34 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
   }
   ```
 
-#### **Listar Usuários**
-- **GET** `/usuarios`
-- **Descrição**: Retorna a lista de todos os usuários.
+#### **Listar Usuários por Empresa**
+- **GET** `/usuario/:empresaId`
+- **Descrição**: Retorna a lista de usuários de uma empresa específica.
 - **Resposta**:
   ```json
   [
     {
       "id": 1,
       "nome": "João Silva",
-      "email": "joao@email.com"
+      "email": "joao@email.com",
+      "empresa": {
+        "id": 1,
+        "nome": "Empresa X"
+      }
+    }
+  ]
+  ```
+
+#### **Buscar Empresas por Email do Usuário**
+- **GET** `/usuario/empresa/:email`
+- **Descrição**: Retorna as empresas associadas a um usuário pelo email.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Empresa X",
+      "cnpj": "12345678000199"
     }
   ]
   ```
@@ -97,7 +118,7 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
 ### **Empresas**
 
 #### **Criar Empresa**
-- **POST** `/empresas`
+- **POST** `/empresa`
 - **Descrição**: Cria uma nova empresa.
 - **Body**:
   ```json
@@ -116,8 +137,23 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
   ```
 
 #### **Listar Empresas**
-- **GET** `/empresas`
+- **GET** `/empresa`
 - **Descrição**: Retorna a lista de todas as empresas.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Empresa X",
+      "cnpj": "12345678000199"
+    }
+  ]
+  ```
+
+#### **Buscar Empresas do Usuário Autenticado**
+- **GET** `/empresa/usuario`
+- **Descrição**: Retorna as empresas associadas ao usuário autenticado.
+- **Requer Autenticação**: Sim.
 - **Resposta**:
   ```json
   [
@@ -131,17 +167,109 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
 
 ---
 
+### **Clientes**
+
+#### **Criar Cliente**
+- **POST** `/cliente`
+- **Descrição**: Cria um novo cliente.
+- **Body**:
+  ```json
+  {
+    "empresaId": 1,
+    "nome": "Cliente A",
+    "cpf": "12345678900",
+    "email": "cliente@email.com",
+    "endereco": "Rua X, 123",
+    "telefone": "999999999"
+  }
+  ```
+- **Resposta**:
+  ```json
+  {
+    "id": 1,
+    "nome": "Cliente A",
+    "cpf": "12345678900",
+    "email": "cliente@email.com"
+  }
+  ```
+
+#### **Listar Clientes por Empresa**
+- **GET** `/cliente/:empresaId`
+- **Descrição**: Retorna a lista de clientes de uma empresa específica.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Cliente A",
+      "cpf": "12345678900",
+      "email": "cliente@email.com"
+    }
+  ]
+  ```
+
+#### **Buscar Cliente por CPF**
+- **GET** `/cliente/:empresaId/:cpf`
+- **Descrição**: Retorna os dados de um cliente específico pelo CPF.
+- **Resposta**:
+  ```json
+  {
+    "id": 1,
+    "nome": "Cliente A",
+    "cpf": "12345678900",
+    "email": "cliente@email.com"
+  }
+  ```
+
+---
+
+### **Fabricantes**
+
+#### **Criar Fabricante**
+- **POST** `/fabricante`
+- **Descrição**: Cria um novo fabricante.
+- **Body**:
+  ```json
+  {
+    "empresaId": 1,
+    "nome": "Fabricante A"
+  }
+  ```
+- **Resposta**:
+  ```json
+  {
+    "id": 1,
+    "nome": "Fabricante A"
+  }
+  ```
+
+#### **Listar Fabricantes por Empresa**
+- **GET** `/fabricante/:empresaId`
+- **Descrição**: Retorna a lista de fabricantes de uma empresa específica.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Fabricante A"
+    }
+  ]
+  ```
+
+---
+
 ### **Produtos**
 
 #### **Criar Produto**
-- **POST** `/produtos`
+- **POST** `/produto`
 - **Descrição**: Cria um novo produto.
 - **Body**:
   ```json
   {
     "nome": "Produto A",
-    "preco": 100.0,
-    "estoque": 50
+    "precoVenda": 100.0,
+    "empresaId": 1,
+    "fabricanteId": 1
   }
   ```
 - **Resposta**:
@@ -149,22 +277,76 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
   {
     "id": 1,
     "nome": "Produto A",
-    "preco": 100.0,
-    "estoque": 50
+    "precoVenda": 100.0,
+    "estoque": 0
   }
   ```
 
-#### **Listar Produtos**
-- **GET** `/produtos`
-- **Descrição**: Retorna a lista de todos os produtos.
+#### **Listar Produtos por Empresa**
+- **GET** `/produto/:empresaId`
+- **Descrição**: Retorna a lista de produtos de uma empresa específica.
 - **Resposta**:
   ```json
   [
     {
       "id": 1,
       "nome": "Produto A",
-      "preco": 100.0,
-      "estoque": 50
+      "precoVenda": 100.0,
+      "estoque": 0
+    }
+  ]
+  ```
+
+#### **Listar Produtos por Fabricante**
+- **GET** `/produto/fabricante/:empresaId/:fabricanteId`
+- **Descrição**: Retorna a lista de produtos de um fabricante específico.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "nome": "Produto A",
+      "precoVenda": 100.0,
+      "estoque": 0
+    }
+  ]
+  ```
+
+---
+
+### **Itens de Produto**
+
+#### **Criar Item de Produto**
+- **POST** `/produto_item`
+- **Descrição**: Cria um novo item de produto.
+- **Body**:
+  ```json
+  {
+    "codigo": "123",
+    "descricao": "Item A",
+    "produtoId": 1,
+    "empresaId": 1
+  }
+  ```
+- **Resposta**:
+  ```json
+  {
+    "id": 1,
+    "codigo": "123",
+    "descricao": "Item A"
+  }
+  ```
+
+#### **Listar Itens de Produto**
+- **GET** `/produto_item/:empresaId/:produtoId`
+- **Descrição**: Retorna a lista de itens de um produto específico.
+- **Resposta**:
+  ```json
+  [
+    {
+      "id": 1,
+      "codigo": "123",
+      "descricao": "Item A"
     }
   ]
   ```
@@ -174,53 +356,67 @@ Este é um projeto backend desenvolvido com NestJS, Prisma ORM e PostgreSQL. Ele
 ### **Vendas**
 
 #### **Criar Venda**
-- **POST** `/vendas`
+- **POST** `/venda`
 - **Descrição**: Cria uma nova venda.
 - **Body**:
   ```json
   {
-    "cliente": "Cliente X",
-    "itens": [
-      {
-        "produtoId": 1,
-        "quantidade": 2
-      }
-    ]
+    "empresaId": 1,
+    "usuarioId": 1,
+    "clienteId": 1,
+    "valor_total": 200.0,
+    "descricao": "Venda A"
   }
   ```
 - **Resposta**:
   ```json
   {
     "id": 1,
-    "cliente": "Cliente X",
-    "valorTotal": 200.0,
+    "valor_total": 200.0,
+    "descricao": "Venda A"
+  }
+  ```
+
+#### **Adicionar Itens à Venda**
+- **POST** `/venda/item`
+- **Descrição**: Adiciona itens a uma venda existente.
+- **Body**:
+  ```json
+  {
+    "vendaId": 1,
     "itens": [
       {
-        "produtoId": 1,
-        "quantidade": 2
+        "produtoItemId": 1,
+        "quantidade": 2,
+        "valor_unitario": 100.0,
+        "valor_total": 200.0,
+        "desconto": 0
       }
     ]
   }
   ```
-
-#### **Listar Vendas**
-- **GET** `/vendas`
-- **Descrição**: Retorna a lista de todas as vendas.
 - **Resposta**:
   ```json
-  [
-    {
-      "id": 1,
-      "cliente": "Cliente X",
-      "valorTotal": 200.0,
-      "itens": [
-        {
-          "produtoId": 1,
-          "quantidade": 2
-        }
-      ]
-    }
-  ]
+  {
+    "message": "Itens adicionados com sucesso"
+  }
+  ```
+
+#### **Remover Item da Venda**
+- **POST** `/venda/item/remove`
+- **Descrição**: Remove um item de uma venda.
+- **Body**:
+  ```json
+  {
+    "empresaId": 1,
+    "vendaItemId": 1
+  }
+  ```
+- **Resposta**:
+  ```json
+  {
+    "message": "Item removido com sucesso"
+  }
   ```
 
 ---
