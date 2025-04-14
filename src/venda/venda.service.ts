@@ -20,7 +20,15 @@ export class VendaService {
             include: {
                 usuario: true,
                 cliente: true,
-                VendaItem: true
+                VendaItem: {
+                    include: {
+                        produtoItem: {
+                            include: {
+                                produto: true
+                            }
+                        }
+                    }
+                }
             }
         });
     }
