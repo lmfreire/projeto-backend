@@ -14,7 +14,8 @@ export class findAllByFabricanteDto extends findAllDto{
     fabricanteId: number;
 }
 
-export class findById extends findAllByFabricanteDto{
+export class findById{
+    empresaId: number;
     id: number;
 }
 

@@ -33,18 +33,16 @@ export class ProdutoController {
         return this.produtoService.findAllByFabricante(data);
     }
 
-    @Get('fabricante/:empresaId/:fabricanteId/:id')
+    @Get(':empresaId/:id')
     findById(
         @Param('empresaId') empresaId: number,
-        @Param('fabricanteId') fabricanteId: number,
         @Param('id') id: number,
     ){
         const data: findById = {
-            fabricanteId,
             empresaId,
             id
         } 
-        return this.produtoService.findAllByFabricante(data);
+        return this.produtoService.findById(data);
     }
 
 

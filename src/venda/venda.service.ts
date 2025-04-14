@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProdutoItemService } from 'src/produto-item/produto-item.service';
 import { ProdutoService } from 'src/produto/produto.service';
-import { VendaDto, VendaItemDto, VendaItemRemoveDto } from './venda.dto';
+import { VendaDto, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
 
 @Injectable()
 export class VendaService {
@@ -11,6 +11,34 @@ export class VendaService {
         private readonly produtoService: ProdutoService,
         private readonly produtoItemService: ProdutoItemService
     ){}
+
+    async findAllByEmpresa(empresaId: number) {
+        return await this.prismaService.venda.findMany({
+            where: {
+                empresaId: Number(empresaId)
+            },
+            include: {
+                usuario: true,
+                cliente: true,
+                VendaItem: true
+            }
+        });
+    }
+
+    async findById(data: VendaItemFindById) {
+        return await this.prismaService.venda.findFirst({
+            where: {
+                id: Number(data.vendaItemId),
+                empresaId: Number(data.empresaId)
+            },
+            include: {
+                usuario: true,
+                empresa: true,
+                cliente: true,
+                VendaItem: true
+            }
+        });
+    }
 
     async create(data: VendaDto){
         return await this.prismaService.venda.create({

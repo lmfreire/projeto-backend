@@ -23,3 +23,8 @@ export class VendaItemRemoveDto {
     empresaId: number;
     vendaItemId: number;
 }
+
+export class VendaItemFindById {
+    empresaId: number;
+    vendaItemId: number;
+}

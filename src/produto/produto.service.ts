@@ -38,7 +38,6 @@ export class ProdutoService {
     async findById(data: findById) {
         return this.prismaService.produto.findUnique({
             where: {
-                fabricanteId: Number(data.fabricanteId),
                 empresaId: Number(data.empresaId),
                 id: Number(data.id)
             },
