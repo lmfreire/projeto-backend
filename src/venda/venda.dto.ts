@@ -1,5 +1,12 @@
 export class VendaDto {    
     empresaId: number;
+    clienteId: number;
+    valor_total?: number;
+    descricao?: string;
+}
+
+export class VendaDtoService {    
+    empresaId: number;
     usuarioId: number;
     clienteId: number;
     valor_total?: number;

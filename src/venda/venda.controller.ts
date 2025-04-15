@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { VendaService } from './venda.service';
-import { VendaDto, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
+import { VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
 import { AuthGuard } from '../usuario/auth.guard';
 
 @UseGuards(AuthGuard)
@@ -30,8 +30,12 @@ export class VendaController {
     
 
     @Post()
-    async create(@Body() data: VendaDto) {        
-        return this.vendaService.create(data);
+    async create(@Req() req: Request, @Body() data: VendaDto) {  
+        const dt: VendaDtoService = {
+            ...data,
+            usuarioId: req['user'].id,
+        } 
+        return this.vendaService.create(dt);
     }
 
     @Post("/item")

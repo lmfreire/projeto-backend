@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProdutoItemService } from 'src/produto-item/produto-item.service';
 import { ProdutoService } from 'src/produto/produto.service';
-import { VendaDto, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
+import { VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
 
 @Injectable()
 export class VendaService {
@@ -56,7 +56,7 @@ export class VendaService {
         });
     }
 
-    async create(data: VendaDto){
+    async create(data: VendaDtoService){
         return await this.prismaService.venda.create({
             data: {
                 valor_total: data.valor_total,
