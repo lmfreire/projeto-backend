@@ -90,7 +90,7 @@ export class VendaService {
 
             const itemv = await this.prismaService.vendaItem.create({
                 data: {
-                    produtoItemId: item.produtoItemId,
+                    produtoItemId: produtoI.id,
                     quantidade: item.quantidade,
                     valor_unitario: item.valor_unitario,
                     valor_total: item.valor_total,
