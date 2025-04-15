@@ -43,7 +43,15 @@ export class VendaService {
                 usuario: true,
                 empresa: true,
                 cliente: true,
-                VendaItem: true
+                VendaItem: {
+                    include: {
+                        produtoItem: {
+                            include: {
+                                produto: true
+                            }
+                        }
+                    }
+                }
             }
         });
     }
