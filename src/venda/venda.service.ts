@@ -81,6 +81,13 @@ export class VendaService {
 
         let total = 0;
         for (const item of data.itens) {
+            const produtoI = await this.prismaService.produtoItem.findFirst({
+                where: {
+                    produtoId: item.produtoItemId,
+                    vendaItem: null,
+                }
+            })
+
             const itemv = await this.prismaService.vendaItem.create({
                 data: {
                     produtoItemId: item.produtoItemId,
