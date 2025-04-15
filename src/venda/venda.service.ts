@@ -88,9 +88,16 @@ export class VendaService {
                 throw new BadRequestException("Erro ao adicionar item");
             }
 
+            const produtoItem = await this.prismaService.produtoItem.findFirst({
+                where: {
+                    id: item.produtoItemId,
+                    empresaId: data.empresaId
+                }
+            })
+
             const res = await this.produtoService.removerEstoque({
-                empresaId: item.produtoItemId,
-                produtoId: item.quantidade,
+                empresaId: data.empresaId,
+                produtoId: produtoItem.produtoId,
                 quantidade: item.quantidade
             });
 

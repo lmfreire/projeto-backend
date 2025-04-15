@@ -16,6 +16,7 @@ export class VendaItemArrDto {
 
 export class VendaItemDto {
     vendaId: number;    
+    empresaId: number;
     itens: VendaItemArrDto[];
 }
 
