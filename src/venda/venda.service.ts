@@ -105,7 +105,7 @@ export class VendaService {
 
             const res = await this.produtoService.removerEstoque({
                 empresaId: data.empresaId,
-                produtoId: produtoI.id,
+                produtoId: item.produtoItemId,
                 quantidade: item.quantidade
             });
 
@@ -124,6 +124,13 @@ export class VendaService {
         const item = await this.prismaService.vendaItem.findUnique({
             where: {
                 id: data.vendaItemId,                
+            },
+            include: {
+                produtoItem: {
+                    include: {
+                        produto: true
+                    }
+                }
             }
         });
 
@@ -131,15 +138,9 @@ export class VendaService {
             throw new BadRequestException("Item não encontrado");
         }
 
-        const produtoI = await this.prismaService.produtoItem.findFirst({
-            where: {
-                produtoId: item.produtoItemId,
-                vendaItem: null,
-            }
-        })
         const res = await this.produtoService.adicionarEstoque({
             empresaId: data.empresaId,
-            produtoId: produtoI.id,
+            produtoId: item.produtoItem.produtoId,
         });
 
         if (!res) {
