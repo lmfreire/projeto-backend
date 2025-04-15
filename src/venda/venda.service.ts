@@ -103,16 +103,9 @@ export class VendaService {
                 throw new BadRequestException("Erro ao adicionar item");
             }
 
-            const produtoItem = await this.prismaService.produtoItem.findFirst({
-                where: {
-                    id: item.produtoItemId,
-                    empresaId: data.empresaId
-                }
-            })
-
             const res = await this.produtoService.removerEstoque({
                 empresaId: data.empresaId,
-                produtoId: produtoItem.produtoId,
+                produtoId: produtoI.id,
                 quantidade: item.quantidade
             });
 
@@ -138,16 +131,15 @@ export class VendaService {
             throw new BadRequestException("Item não encontrado");
         }
 
-        const produtoItem = await this.prismaService.produtoItem.findFirst({
+        const produtoI = await this.prismaService.produtoItem.findFirst({
             where: {
-                id: item.produtoItemId,
-                empresaId: data.empresaId
+                produtoId: item.produtoItemId,
+                vendaItem: null,
             }
         })
-
         const res = await this.produtoService.adicionarEstoque({
             empresaId: data.empresaId,
-            produtoId: produtoItem.produtoId,
+            produtoId: produtoI.id,
         });
 
         if (!res) {
