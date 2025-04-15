@@ -123,9 +123,16 @@ export class VendaService {
             throw new BadRequestException("Item não encontrado");
         }
 
+        const produtoItem = await this.prismaService.produtoItem.findFirst({
+            where: {
+                id: item.produtoItemId,
+                empresaId: data.empresaId
+            }
+        })
+
         const res = await this.produtoService.adicionarEstoque({
             empresaId: data.empresaId,
-            produtoId: item.produtoItemId
+            produtoId: produtoItem.produtoId,
         });
 
         if (!res) {
