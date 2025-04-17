@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ProdutoService } from './produto.service';
 import { AuthGuard } from '../usuario/auth.guard';
 import { findAllByFabricanteDto, findById, ProdutoDto } from './produto-dto';
@@ -17,8 +17,12 @@ export class ProdutoController {
     }
 
     @Get(':empresaId')
-    findAll(@Param('empresaId') empresaId: number){
-        return this.produtoService.findAll(empresaId);
+    findAll(
+        @Param('empresaId') empresaId: number,
+        @Query('page') page: number = 1, 
+        @Query('limit') limit: number = 10
+    ){
+        return this.produtoService.findAllWithPagination(empresaId, page, limit);
     }
 
     @Get('fabricante/:empresaId/:fabricanteId')

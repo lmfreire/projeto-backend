@@ -26,6 +26,35 @@ export class ProdutoService {
         });
     }
 
+    async findAllWithPagination(empresaId: number, page: number, limit: number) {
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+
+        const skip = (pageNumber - 1) * limitNumber; 
+    
+        const [produtos, total] = await Promise.all([
+            this.prismaService.produto.findMany({
+                where: {
+                    empresaId: Number(empresaId),
+                },
+                skip: skip,
+                take: limitNumber,
+            }),
+            this.prismaService.produto.count({
+                where: {
+                    empresaId: Number(empresaId),
+                },
+            }),
+        ]);
+    
+        return {
+            total,
+            pageNumber,
+            limitNumber,
+            data: produtos,
+        };
+    }
+
     async findAllByFabricante(data: findAllByFabricanteDto) {
         return this.prismaService.produto.findMany({
             where: {
