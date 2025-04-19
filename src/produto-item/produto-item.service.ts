@@ -50,7 +50,10 @@ export class ProdutoItemService {
     async findAllByEmpresa(data: BuscarProdutoItemDto){
         return await this.prismaService.produtoItem.findMany({
             where: {
-                empresaId: Number(data.empresaId)
+                empresaId: Number(data.empresaId),
+                vendaItem: {
+                    NOT: null
+                }
             },
             include: {
                 produto: true
