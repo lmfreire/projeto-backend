@@ -145,8 +145,8 @@ export class VendaService {
                 produtoId: item.produtoItem.produtoId,
             });
     
-            if (!res) {
-                throw new BadRequestException("Erro ao adicionar estoque");
+            if (!res) { 
+                throw new BadRequestException("Erro ao adicionar estoque.");
             }
         }
     
