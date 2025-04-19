@@ -14,7 +14,7 @@ export class VendaDtoService {
 }
 
 export class VendaItemArrDto {
-    produtoItemId: number;
+    produtoItemId: string;
     quantidade: number;
     valor_unitario: number;
     valor_total: number;
