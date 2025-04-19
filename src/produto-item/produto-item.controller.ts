@@ -32,4 +32,15 @@ export class ProdutoItemController {
         } 
         return this.produtoItemService.findAll(data);
     }
+    @Get(':empresaId')
+    findAllByEmpresa(
+        @Param('empresaId') empresaId: number,
+        @Param('produtoId') produtoId: number,
+    ){
+        const data: BuscarProdutoItemDto = {
+            produtoId,
+            empresaId
+        } 
+        return this.produtoItemService.findAllByEmpresa(data);
+    }
 }
