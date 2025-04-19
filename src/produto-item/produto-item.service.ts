@@ -55,7 +55,7 @@ export class ProdutoItemService {
             where: {
                 empresaId: Number(data.empresaId),
                 vendaItem: {
-                    NOT: null
+                    is: null
                 }
             },
             include: {
