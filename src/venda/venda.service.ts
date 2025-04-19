@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ProdutoItemService } from 'src/produto-item/produto-item.service';
 import { ProdutoService } from 'src/produto/produto.service';
 import { VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class VendaService {
@@ -10,7 +11,7 @@ export class VendaService {
         private readonly prismaService: PrismaService,
         private readonly produtoService: ProdutoService,
         private readonly produtoItemService: ProdutoItemService
-    ){}
+    ) { }
 
     async findAllByEmpresa(empresaId: number) {
         return await this.prismaService.venda.findMany({
@@ -56,19 +57,19 @@ export class VendaService {
         });
     }
 
-    async create(data: VendaDtoService){
+    async create(data: VendaDtoService) {
         return await this.prismaService.venda.create({
             data: {
                 valor_total: data.valor_total,
                 descricao: data.descricao,
                 usuarioId: data.usuarioId,
                 empresaId: data.empresaId,
-                clienteId: data.clienteId                
+                clienteId: data.clienteId
             },
         })
     }
 
-    async adicionarItens(data: VendaItemDto){
+    async adicionarItens(data: VendaItemDto) {
         const venda = await this.prismaService.venda.findUnique({
             where: {
                 id: data.vendaId
@@ -118,12 +119,12 @@ export class VendaService {
 
         await this.atualizarTotal(data.vendaId, total);
 
-    } 
-    
-    async removerItem(data: VendaItemRemoveDto){
+    }
+
+    async removerItem(data: VendaItemRemoveDto) {
         const item = await this.prismaService.vendaItem.findUnique({
             where: {
-                id: data.vendaItemId,                
+                id: data.vendaItemId,
             },
             include: {
                 produtoItem: {
@@ -133,39 +134,56 @@ export class VendaService {
                 }
             }
         });
-
+    
         if (!item) {
             throw new BadRequestException("Item não encontrado");
         }
-
-        for(let i = 0; i < item.quantidade; i++){
+    
+        for (let i = 0; i < item.quantidade; i++) {
             const res = await this.produtoService.adicionarEstoque({
                 empresaId: data.empresaId,
                 produtoId: item.produtoItem.produtoId,
             });
-
+    
             if (!res) {
                 throw new BadRequestException("Erro ao adicionar estoque");
             }
         }
-        
-
-        return await this.prismaService.vendaItem.delete({
+    
+        await this.prismaService.vendaItem.delete({
             where: {
                 id: data.vendaItemId
             }
-
         });
-    }
     
-    async atualizarTotal(vendaId: number, total: number){
+        await this.atualizarTotal(item.vendaId, -item.valor_total);
+    
+        return { message: "Item removido com sucesso" };
+    }
+
+    async atualizarTotal(vendaId: number, total: number) {
+        const venda = await this.prismaService.venda.findUnique({
+            where: {
+                id: vendaId,
+            },
+            select: {
+                valor_total: true,
+            },
+        });
+
+        if (!venda) {
+            throw new BadRequestException("Venda não encontrada");
+        }
+
+        const novoTotal = Number(venda.valor_total) + total;
+
         return await this.prismaService.venda.update({
             where: {
-                id: vendaId
+                id: vendaId,
             },
             data: {
-                valor_total: total
-            }
-        });        
+                valor_total: novoTotal,
+            },
+        });
     }
 }

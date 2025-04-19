@@ -40,7 +40,7 @@ export class ProdutoItemService {
                 empresaId: Number(data.empresaId),
                 produtoId: Number(data.produtoId),
                 vendaItem: {
-                    NOT: null
+                    is: null
                 }
             },
             include: {
