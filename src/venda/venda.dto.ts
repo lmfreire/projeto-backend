@@ -36,3 +36,8 @@ export class VendaItemFindById {
     empresaId: number;
     vendaItemId: number;
 }
+
+export class VendaDTO {
+    empresaId: number;
+    vendaId: number;
+}

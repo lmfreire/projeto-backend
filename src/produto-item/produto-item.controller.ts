@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../usuario/auth.guard';
 import { ProdutoItemService } from './produto-item.service';
 import { BuscarProdutoItemDto, ProdutoItemDto } from './produto-item.dto';
@@ -43,4 +43,5 @@ export class ProdutoItemController {
         } 
         return this.produtoItemService.findAllByEmpresa(data);
     }
+
 }

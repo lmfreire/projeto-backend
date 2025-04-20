@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ProdutoItemService } from 'src/produto-item/produto-item.service';
 import { ProdutoService } from 'src/produto/produto.service';
-import { VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
+import { VendaDTO, VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
@@ -134,30 +134,30 @@ export class VendaService {
                 }
             }
         });
-    
+
         if (!item) {
             throw new BadRequestException("Item não encontrado");
         }
-    
+
         for (let i = 0; i < item.quantidade; i++) {
             const res = await this.produtoService.adicionarEstoque({
                 empresaId: data.empresaId,
                 produtoId: item.produtoItem.produtoId,
             });
-    
-            if (!res) { 
+
+            if (!res) {
                 throw new BadRequestException("Erro ao adicionar estoque.");
             }
         }
-    
+
         await this.prismaService.vendaItem.delete({
             where: {
                 id: data.vendaItemId
             }
         });
-    
+
         await this.atualizarTotal(item.vendaId, -item.valor_total);
-    
+
         return { message: "Item removido com sucesso" };
     }
 
@@ -185,5 +185,41 @@ export class VendaService {
                 valor_total: novoTotal,
             },
         });
+    }
+
+    async finalizarVenda(data: VendaDTO) {
+        const venda = await this.prismaService.venda.findUnique({
+            where: {
+                id: parseInt(data.vendaId.toString(), 10),
+            },
+        });
+
+        if (!venda) {
+            throw new BadRequestException("Venda não encontrada");
+        }
+
+        return await this.prismaService.venda.update({
+            where: {
+                id: parseInt(data.vendaId.toString(), 10),
+            },
+            data: {
+                finalizada: true,
+            },
+            include: {
+                usuario: true,
+                empresa: true,
+                cliente: true,
+                VendaItem: {
+                    include: {
+                        produtoItem: {
+                            include: {
+                                produto: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
     }
 }

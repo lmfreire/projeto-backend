@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { VendaService } from './venda.service';
-import { VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
+import { VendaDTO, VendaDto, VendaDtoService, VendaItemDto, VendaItemFindById, VendaItemRemoveDto } from './venda.dto';
 import { AuthGuard } from '../usuario/auth.guard';
+import { BuscarProdutoItemDto } from '../produto-item/produto-item.dto';
 
 @UseGuards(AuthGuard)
 @Controller('venda')
@@ -46,5 +47,17 @@ export class VendaController {
     @Post("/item/remove")
     async removeItem(@Body() data: VendaItemRemoveDto) {        
         return this.vendaService.removerItem(data);
+    }
+
+    @Patch(':empresaId/:vendaId')
+    finalizarVenda(
+        @Param('empresaId') empresaId: number,
+        @Param('vendaId') vendaId: number,
+    ) {
+        const data: VendaDTO = {
+            vendaId,
+            empresaId
+        } 
+        return this.vendaService.finalizarVenda(data);
     }
 }
